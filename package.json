@@ -1,0 +1,35 @@
+{
+  "name": "cryptocent",
+  "version": "0.0.0",
+  "description": "RESTful server maintaining historical cryptocurrency values ",
+  "main": "app.js",
+  "dependencies": {
+    "body-parser": "^1.4.3",
+    "express": "^4.4.4",
+    "morgan": "^1.1.1",
+    "mssql": "^0.5.4"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "n/a"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/RP-3/cryptocent.git"
+  },
+  "keywords": [
+    "bitcoin",
+    "dodgecoin",
+    "litecoin",
+    "historical",
+    "server",
+    "REST",
+    "API"
+  ],
+  "author": "RP-3",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/RP-3/cryptocent/issues"
+  },
+  "homepage": "https://github.com/RP-3/cryptocent"
+}
