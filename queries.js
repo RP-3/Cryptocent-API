@@ -7,7 +7,7 @@ var connection = new sql.Connection(config, function(err){
 	}else{
 		console.log('Database connection established.');
 		//execute test functions during development here:
-
+		query(testQ, console.log);
 		//^^^
 	}
 });
@@ -18,38 +18,41 @@ var testQ = {
 	end: '2014-06-25T20:16:39.868Z'
 };
 
+//expects an object in the form of testQ
 var queryConstructor = function(queryObj){
 	var qString = {};
-	qString.prefix = 'SELECT * FROM transactions';
+	qString.prefix = "SELECT * FROM transactions WHERE ";
+
+	//parse currency
+	if(queryObj.currency === "bi" || queryObj.currency === "do" || queryObj.currency === "li"){
+		qString.currency =  "currency = '" + queryObj.currency + "'";
+	}
 
 	//parse date
 	if(queryObj.hasOwnProperty('start') && queryObj.hasOwnProperty('end')){
 		var start = new Date(queryObj.start).toISOString();
 		var end = new Date(queryObj.end).toISOString();
-		qString.date = ' WHERE updated BETWEEN ' + start + ' and ' + end;
+		qString.date = " AND updated BETWEEN '" + start + "' and '" + end +"'";
 	}
 
-	//parse currency
-	if(queryObj.currency === 'bi' || queryObj.currency === 'do' || queryObj.currency === 'li'){
-		qString.currency = queryObj.currency;
-	}
-
-	return qString.prefix + qString.date + qString.currency;;
-}
-
-/*standard query to return all results*/
-var query = function(queryObj){
-	console.log(queryConstructor(testQ));
-
-	// request.query('select * from transactions', function(err, recordset) {
-	// 	if(err){
-	// 		console.log(err);
-	// 	}
-	// 	cb(recordset);
-	// });
+	return qString.prefix + qString.currency + qString.date;
 };
 
-query();
+/*standard query to return all results*/
+var query = function(queryObj, cb){
+	var q = queryConstructor(queryObj);
+	console.log(q);
+	var request = connection.request();
+
+	request.query(q, function(err, recordset) {
+		if(err){
+			console.log(err);
+		}
+		cb(recordset);
+	});
+};
+
+
 
 /*return minutely average in date range*/
 
