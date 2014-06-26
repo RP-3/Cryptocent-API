@@ -6,9 +6,6 @@ var connection = new sql.Connection(config, function(err){
 		console.log('Database connection error: ', err);
 	}else{
 		console.log('Database connection established.');
-		//execute test functions during development here:
-		minly(testQ, console.log);
-		//^^^
 	}
 });
 
@@ -18,29 +15,9 @@ var testQ = {
 	end: '2014-06-25T20:16:39.868Z'
 };
 
-//expects an object in the form of testQ
-var queryConstructor = function(queryObj){
-	var qString = {};
-	qString.prefix = "SELECT * FROM transactions WHERE ";
-
-	//parse currency
-	if(queryObj.currency === "bi" || queryObj.currency === "do" || queryObj.currency === "li"){
-		qString.currency =  "currency = '" + queryObj.currency + "'";
-	}
-
-	//parse date
-	if(queryObj.hasOwnProperty('start') && queryObj.hasOwnProperty('end')){
-		var start = new Date(queryObj.start).toISOString();
-		var end = new Date(queryObj.end).toISOString();
-		qString.date = " AND updated BETWEEN '" + start + "' and '" + end +"'";
-	}
-
-	return qString.prefix + qString.currency + qString.date;
-};
-
 /*standard query to return all results*/
 var minly = function(queryObj, cb){
-	var q = queryConstructor(queryObj);
+	var q = "SELECT * FROM transactions WHERE currency = '"+ queryObj.currency +"' AND updated BETWEEN '"+ new Date(queryObj.start).toISOString() +"' and '" + new Date(queryObj.end).toISOString() + "' order by updated asc";
 	var request = connection.request();
 
 	request.query(q, function(err, recordset) {
@@ -68,7 +45,6 @@ var hourly = function(queryObj, cb){
 
 /*return daily average in date range*/
 var daily = function(queryObj, cb){
-
 	var parseSqlDate = function(dateString){
 		var d = new Date(dateString);
 		return d.getFullYear() + '-' + (d.getMonth() + 1) + '-' + d.getDate();
@@ -85,6 +61,7 @@ var daily = function(queryObj, cb){
 	});
 };
 
-
 /*declare exports*/
 module.exports.minly = minly;
+module.exports.hourly = hourly;
+module.exports.daily = daily;
