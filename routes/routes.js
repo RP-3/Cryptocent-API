@@ -56,8 +56,10 @@ apiRouter.param('end', function(req, res, next, end){
 
 /*handle minly requests*/
 apiRouter.get('/minly/:currency/:start/:end', function(req, res, next){
-	if((req.end - req.start) > 37500000){
-		res.send(403.10, 'Cannot fetch more than 5000 records. You requested approximately ' + (req.end-req.start)/(7500));
+	var st = Date.parse(req.query.start);
+	var en = Date.parse(req.query.end);
+	if((en - st) > 15000000){
+		res.send(403.10, 'Cannot fetch more than 2000 records per request. You requested approximately ' + Math.floor((en-st)/(7500)) );
 	}else{
 		queries.minly(req.query, function(data){
 			res.send(data);
