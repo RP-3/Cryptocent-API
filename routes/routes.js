@@ -61,20 +61,42 @@ apiRouter.get('/minly/:currency/:start/:end', function(req, res, next){
 	if((en - st) > 15000000){
 		res.send(403.10, 'Cannot fetch more than 2000 records per request. You requested approximately ' + Math.floor((en-st)/(7500)) );
 	}else{
-		queries.minly(req.query, function(data){
-			res.send(data);
+		queries.minly(req.query, function(err, data){
+			if(err){
+				res.send(501, 'Database read error');
+			}else{
+				res.send(data);
+			}
 		});
 	}
 });
 
 /*handle hourly requests*/
 apiRouter.get('/hourly/:currency/:start/:end', function(req, res, next){
-
+	var st = Date.parse(req.query.start);
+	var en = Date.parse(req.query.end);
+	if((en - st) > 900000000){
+		res.send(403.10, 'Cannot fetch more than 2000 records per request. You requested approximately ' + Math.floor((en-st)/(450000)) );
+	}else{
+		queries.hourly(req.query, function(err, data){
+			if(err){
+				res.send(501, 'Database read error');
+			}else{
+				res.send(data);
+			}
+		});
+	}
 });
 
 /*handle hourly requests*/
 apiRouter.get('/daily/:currency/:start/:end', function(req, res, next){
-
+	queries.daily(req.query, function(err, data){
+		if(err){
+			res.send(501, 'Database read error');
+		}else{
+			res.send(data);
+		}
+	});
 });
 
 /*declare exports*/
