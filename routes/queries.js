@@ -33,7 +33,6 @@ var hourly = function(queryObj, cb){
 	request.query(q, cb);
 };
 
-
 /*return daily average in date range*/
 var daily = function(queryObj, cb){
 	var parseSqlDate = function(dateString){

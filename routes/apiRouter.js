@@ -87,7 +87,7 @@ apiRouter.get('/hourly/:currency/:start/:end', function(req, res, next){
 	}
 });
 
-/*handle hourly requests*/
+/*handle daily requests*/
 apiRouter.get('/daily/:currency/:start/:end', function(req, res, next){
 	queries.daily(req.query, function(err, data){
 		if(err){
