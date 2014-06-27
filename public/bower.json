@@ -1,0 +1,26 @@
+{
+  "name": "public",
+  "version": "0.0.0",
+  "authors": [
+    "RP-3"
+  ],
+  "description": "client-side app dependencies",
+  "main": "index.html",
+  "keywords": [
+    "bitcoin",
+    "dodgecoin",
+    "litecoin",
+    "cryptocurrency",
+    "historical",
+    "D3",
+    "angular"
+  ],
+  "license": "MIT",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ]
+}
