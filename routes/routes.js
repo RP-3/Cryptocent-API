@@ -1,6 +1,7 @@
 var express = require('express');
 var apiRouter = express.Router();
 var analyticsRouter = express.Router();
+var queries = require('./queries.js');
 
 /*validate currency param*/
 apiRouter.param('currency', function(req, res, next, currency){
@@ -53,6 +54,26 @@ apiRouter.param('end', function(req, res, next, end){
 	}
 });
 
+/*handle minly requests*/
+apiRouter.get('/minly/:currency/:start/:end', function(req, res, next){
+	if((req.end - req.start) > 37500000){
+		res.send(403.10, 'Cannot fetch more than 5000 records. You requested approximately ' + (req.end-req.start)/(7500));
+	}else{
+		queries.minly(req.query, function(data){
+			res.send(data);
+		});
+	}
+});
+
+/*handle hourly requests*/
+apiRouter.get('/hourly/:currency/:start/:end', function(req, res, next){
+
+});
+
+/*handle hourly requests*/
+apiRouter.get('/daily/:currency/:start/:end', function(req, res, next){
+
+});
 
 /*declare exports*/
 module.exports.apiRouter = apiRouter;
