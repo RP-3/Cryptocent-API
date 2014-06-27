@@ -1,6 +1,6 @@
 /*Initialise sql connection*/
 var sql = require('mssql');
-var config = require('./config_dev.json').mssql;
+var config = require('../config_dev.json').mssql;
 var connection = new sql.Connection(config, function(err){
 	if(err){
 		console.log('Database connection error: ', err);
