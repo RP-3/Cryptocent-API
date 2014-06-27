@@ -1,6 +1,7 @@
-var routers = require('../routes/routes.js');
+var apiRouter = require('../routes/apiRouter.js');
+var analyticsRouter = require('../routes/analyticsRouter.js');
 
 module.exports = function(app){
-	app.use('/api', routers.apiRouter);
-	app.use('/', routers.analyticsRouter);
+	app.use('/api', apiRouter);
+	app.use('/', analyticsRouter);
 };
