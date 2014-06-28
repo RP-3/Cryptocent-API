@@ -1,2 +1,4 @@
 node_modules
 config_dev.json
+public/bower_components
+public/bower_components/*
