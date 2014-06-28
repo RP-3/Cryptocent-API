@@ -1,0 +1,1 @@
+var cryptoApp = angular.module('cryptoApp', ['ui.router', 'ui.bootstrap']);
