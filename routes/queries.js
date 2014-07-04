@@ -3,7 +3,9 @@ var sql = require('mssql');
 var config = require('../config_dev.json').mssql;
 var connection = new sql.Connection(config, function(err){
 	if(err){
-		console.log('Database connection error: ', err);
+		console.log('Database connection error:');
+		console.log(err);
+		process.exit();
 	}else{
 		console.log('Database connection established.');
 	}
