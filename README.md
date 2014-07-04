@@ -1,6 +1,8 @@
 Cryptocent-API
 ==========
 
+Read this in a normal text editor. I haven't mark-down-ified this.
+
 RESTful server returning historical crypto-currency exchange rates from July 2014. 
 
 Intended for HRX and current HR student use.
