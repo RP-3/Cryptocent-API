@@ -31,14 +31,13 @@ var connection = new sql.Connection(config, function(err){
     }
 });
 
-
 /*sign in*/
 var signIn = function(identifier, profile, done){
     var id = identifier.slice(identifier.indexOf('=')+1),
     name = profile.name.givenName,
-    email = profile.emails[0],
+    email = profile.emails[0].value,
     //check if user exists and create if not
-    q = "if not exists (select * from traders where identifier = '"+ id +"') begin insert into traders (identifier, name, bitcoin, dodgecoin, litecoin, usd, email) values ('"+ id +"', '"+ name +"', 1.0, 1.0, 1.0, 1000.0, '"+ email +"') end";
+    q = "if not exists (select * from traders where identifier = '"+ id +"') begin insert into traders (identifier, name, bitcoin, dogecoin, litecoin, usd, email) values ('"+ id +"', '"+ name +"', 1.0, 1.0, 1.0, 1000.0, '"+ email +"') end";
 
     var request = connection.request();
     request.query(q, function(err){
@@ -51,25 +50,21 @@ var signIn = function(identifier, profile, done){
 var buy = function(currency, quantity, id){
     //check sufficient account balance
     var cost = rates[currency].ask * quantity;
-    var q = "select usd from traders where identifier = '"+ id +"'";
+    var q = "declare @var int select @var = id from traders where identifier = '"+ id +"' if (select usd from traders where identifier = '"+ id +"') > "+ cost +" begin update traders set usd = usd - "+ cost +", "+ currency +" = "+ currency +" + "+ quantity +" where identifier = '"+ id +"' insert into transactions (currency, quantity, cost, transactor) values ('"+ currency +"', '"+ quantity +"', '"+ cost +"', @var) return end select usd from traders where identifier = '"+ id +"'";
     var request = connection.request();
     request.query(q, function(err, data){
         if(!err){
-            if(data[0].usd < cost){
-                console.log("Insufficient funds.");
+            if(!data){
+                console.log('Transaction complete.'); //req/response should go here or in else statement following
             }else{
-                console.log("transaction complete.")
+                console.log('Insufficient funds: $', data[0].usd);
             }
+        }else{
+            console.log('err: ', err);
         }
     });
 };
 
-setTimeout(function(){
-    buy('bitcoin', 2.8, 'AItOawkO-IhO0Thx1oyLGXpi7Uu6Dg9Knikhhao');
-}, 15000);
-//subtract dollar from dollars
-//quant = rate * dollar
-//add quant to currency
 
 /*sell currency*/
 //check sufficient currency balance
