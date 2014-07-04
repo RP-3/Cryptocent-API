@@ -1,3 +1,23 @@
+/*Initialise firebase connection*/
+var Firebase = require('firebase');
+var source = new Firebase('https://publicdata-cryptocurrency.firebaseio.com/');
+
+//maintains latest exchange rate in memory
+var rates = {bitcoin: {}, litecoin: {}, dogecoin: {}};
+source.on('child_changed', function(snapshot){
+    var data = snapshot.val(),
+    name = snapshot.name();
+
+    if(!rates[name].live){
+        rates[name].live = true;
+        console.log('Currency: ' + name + ' now live.');
+    }
+
+    rates[name].ask = snapshot.val().ask;
+    rates[name].bid = snapshot.val().bid;
+    rates[name].last = snapshot.val().last;
+});
+
 /*initialise sql connections*/
 var sql = require('mssql');
 var config = require('../config_dev.json').mssql_users;
@@ -27,7 +47,26 @@ var signIn = function(identifier, profile, done){
 };
 
 /*buy currency*/
-//check sufficient account balance
+//important! request must be authed by middleware before this function is called!
+var buy = function(currency, quantity, id){
+    //check sufficient account balance
+    var cost = rates[currency].ask * quantity;
+    var q = "select usd from traders where identifier = '"+ id +"'";
+    var request = connection.request();
+    request.query(q, function(err, data){
+        if(!err){
+            if(data[0].usd < cost){
+                console.log("Insufficient funds.");
+            }else{
+                console.log("transaction complete.")
+            }
+        }
+    });
+};
+
+setTimeout(function(){
+    buy('bitcoin', 2.8, 'AItOawkO-IhO0Thx1oyLGXpi7Uu6Dg9Knikhhao');
+}, 15000);
 //subtract dollar from dollars
 //quant = rate * dollar
 //add quant to currency
