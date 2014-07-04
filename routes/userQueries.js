@@ -45,8 +45,9 @@ var signIn = function(identifier, profile, done){
     });
 };
 
+//IMPORTANT! All requests below must be authed by middleware before execution!!
+
 /*buy currency*/
-//important! request must be authed by middleware before this function is called!
 var buy = function(currency, quantity, id){
     //check sufficient account balance
     var cost = rates[currency].ask * quantity;
@@ -65,11 +66,10 @@ var buy = function(currency, quantity, id){
     });
 };
 
-
 /*sell currency*/
 var sell = function(currency, quantity, id){
     var price = rates[currency].bid * quantity;
-    var q = "declare @var int select @var = id from traders where identifier = '"+ id +"' if (select "+ currency +" from traders where identifier = '"+ id +"') > "+ quantity +" begin update traders set usd = usd + "+ price +", "+ currency +" = "+ currency +" - "+ quantity +" where identifier = '"+ id +"' insert into transactions (currency, quantity, cost, transactor) values ('"+ currency +"', '"+ quantity +"', '"+ -cost +"', @var) return end select "+ currency +" from traders where identifier = '"+ id +"'";
+    var q = "declare @var int select @var = id from traders where identifier = '"+ id +"' if (select "+ currency +" from traders where identifier = '"+ id +"') > "+ quantity +" begin update traders set usd = usd + "+ price +", "+ currency +" = "+ currency +" - "+ quantity +" where identifier = '"+ id +"' insert into transactions (currency, quantity, cost, transactor) values ('"+ currency +"', '"+ quantity +"', '"+ -price +"', @var) return end select "+ currency +" from traders where identifier = '"+ id +"'";
     var request = connection.request();
     request.query(q, function(err, data){
         if(!err){
@@ -82,15 +82,23 @@ var sell = function(currency, quantity, id){
             console.log('err: ', err);
         }
     });
-}
-//check sufficient currency balance
-//subtract quant from currency
-//dollar = quant / rate
-//add dollar to dollars
+};
 
-/*delete user*/
-//delete user from users table
-//find user entries in transaction table and delete them too
+/*delete user permanently*/
+var deleteUser = function(id){
+    var q = "declare @var int select @var = id from traders where identifier = '"+ id +"'  delete from traders where identifier = '"+ id +"' delete from transactions where id = @var";
+    var request = connection.request();
+    request.query(q, function(err, data){
+        if(!err){
+            console.log('User '+ id +' deleted');
+        }else{
+            console.log('err: ', err);
+        }
+    });
+};
 
+/*declare exports*/
 module.exports.signIn = signIn;
 module.exports.buy = buy;
+module.exports.sell = sell;
+module.exports.deleteUser = deleteUser;
