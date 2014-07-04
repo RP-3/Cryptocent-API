@@ -1,6 +1,6 @@
 var express = require('express');
 var apiRouter = express.Router();
-var queries = require('./queries.js');
+var queries = require('./apiQueries.js');
 
 /*validate currency param*/
 apiRouter.param('currency', function(req, res, next, currency){
