@@ -1,7 +1,10 @@
 var apiRouter = require('../routes/apiRouter.js');
-var analyticsRouter = require('../routes/analyticsRouter.js');
+var passport = require('./auth.js');
 
 module.exports = function(app){
 	app.use('/api', apiRouter);
-	app.use('/', analyticsRouter);
+	app.get('/', passport.authenticate('google'));
+    app.get('/console', passport.authenticate('google', {
+        successRedirect: '/',
+        failureRedirect: '/fail'}));
 };
