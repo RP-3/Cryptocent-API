@@ -50,7 +50,21 @@ userRouter.post('/account', function(req, res){ //get user's account
 });
 
 userRouter.post('/buy', function(req, res){
-    
+    queries.buy(req.body.currency, req.body.quantity, req.body.id, function(err, data){
+        if(!err){
+            if(!data){
+                queries.getAccount(req.body.id, function(err, data){ //if success, send snapshot of account
+                    if(!err){
+                        res.send(200, data[0]);
+                    }
+                });
+            }else{
+                res.send(405, 'Insufficient funds: $', data[0].usd);
+            }
+        }else{
+            res.send(500, err);
+        }
+    });
 });
 
 userRouter.post('/sell', function(req, res){
