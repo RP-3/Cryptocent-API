@@ -85,3 +85,4 @@ RESTful server returning historical crypto-currency exchange rates from July 201
 #### Use Notes:
 - If your account was created automatically by signing in with google, you can retrieve your account details including identifier and secret at any time by revisiting the home page and signing in with google. 
 - This service is designed to simulate high-frequency trading. If no API endpoints are hit on an account for 24 hours, the account will be deleted permanently. We're letting you programatically create multiple accounts in case you want to do something crazy with genetic algorithms or something. The 24-hour cutoff is a necessary consequence of that, or we'll have billions of idle accounts :)
+- this API intentionally does not provide currency rates. These are available at https://publicdata-cryptocurrency.firebaseio.com/ for free with a really slick API.
