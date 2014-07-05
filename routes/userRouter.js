@@ -59,7 +59,7 @@ userRouter.post('/buy', function(req, res){
                     }
                 });
             }else{
-                res.send(405, 'Insufficient funds: $', data[0].usd);
+                res.send(405, 'Insufficient funds: $' + data[0].usd);
             }
         }else{
             res.send(500, err);
@@ -68,8 +68,32 @@ userRouter.post('/buy', function(req, res){
 });
 
 userRouter.post('/sell', function(req, res){
+    queries.sell(req.body.currency, req.body.quantity, req.body.id, function(err, data){
+        if(!err){
+            if(!data){
+                queries.getAccount(req.body.id, function(err, data){ //if success, send snapshot of account
+                    if(!err){
+                        res.send(200, data[0]);
+                    }
+                });
+            }else{
+                res.send(405, 'Insufficient currency: $' + data[0][currency]);
+            }
+        }else{
+            res.send(500, err);
+        }
+    });
+});
+
+userRouter.delete('/deleteAccount', function(req, res){
 
 });
+
+userRouter.post('/ledger', function(req, res){ //get history of user transactions
+
+});
+
+
 
 /*declare exports*/
 module.exports = userRouter;
