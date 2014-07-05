@@ -46,7 +46,7 @@ userRouter.post('/sell', function(req, res){
                     }
                 });
             }else{
-                res.send(405, 'Insufficient currency: $' + data[0][currency]);
+                res.send(405, 'Insufficient currency: $' + data[0][req.body.currency]);
             }
         }else{
             res.send(500, err);
