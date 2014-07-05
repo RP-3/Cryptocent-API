@@ -34,7 +34,7 @@ var connection = new sql.Connection(config, function(err){
 /*sign in*/
 var signIn = function(identifier, profile, done){
     var id = identifier.slice(identifier.indexOf('=')+1);
-    var profile = profile || {name: 'Lazarus', emails: [{value: 'tyrion@short.io'}]}; //create a profile object if one is not supplied (i.e., manually created profile)
+    var profile = profile || {name: {givenName: 'Lazarus'}, emails: [{value: 'cybertrader@skynet.io'}]}; //create a profile object if one is not supplied (i.e., manually created profile)
     var name = profile.name.givenName;
     var email = profile.emails[0].value;
     //check if user exists and create if not
