@@ -31,18 +31,28 @@ var connection = new sql.Connection(config, function(err){
     }
 });
 
+/*generates a random string of given length*/
+var hashGen = function(length){
+    var hash = "";
+    while(hash.length < length){
+        hash = hash + String.fromCharCode(33 + Math.floor(Math.random() * 93));
+    }
+    return hash;
+};
+
 /*sign in*/
 var signIn = function(identifier, profile, done){
     var id = identifier.slice(identifier.indexOf('=')+1);
     var profile = profile || {name: {givenName: 'Lazarus'}, emails: [{value: 'cybertrader@skynet.io'}]}; //create a profile object if one is not supplied (i.e., manually created profile)
     var name = profile.name.givenName;
     var email = profile.emails[0].value;
+    var hash = hashGen(10);
     //check if user exists and create if not
-    q = "if not exists (select * from traders where identifier = '"+ id +"') begin insert into traders (identifier, name, bitcoin, dogecoin, litecoin, usd, email) values ('"+ id +"', '"+ name +"', 1.0, 1.0, 1.0, 1000.0, '"+ email +"') end";
+    q = "if not exists (select * from traders where identifier = '"+ id +"') begin insert into traders (identifier, name, bitcoin, dogecoin, litecoin, usd, email, secret) values ('"+ id +"', '"+ name +"', 1.0, 1.0, 1.0, 1000.0, '"+ email +"', '"+ hash +"') end";
 
     var request = connection.request();
     request.query(q, function(err){
-        done(err, id);
+        done(err, id, hash);
     });
 };
 
@@ -80,8 +90,14 @@ var getAccount = function(id, cb){
 
 var getHistory = function(id, cb){
     var q = "declare @var int select @var = id from traders where identifier = '"+ id +"' select * from transactions where transactor = @var order by timestamp asc";
-    request = connection.request();
+    var request = connection.request();
     request.query(q, cb); //callback gets passed err, data
+};
+
+var exists = function(id, cb){
+    var q = "select * from traders where identifier = '"+ id +"'";
+    var request = connection.request();
+    request.query(q, cb); //takes err, data
 };
 
 /*declare exports*/
@@ -91,3 +107,4 @@ module.exports.sell = sell;
 module.exports.deleteUser = deleteUser;
 module.exports.getAccount = getAccount;
 module.exports.getHistory = getHistory;
+module.exports.exists = exists;
