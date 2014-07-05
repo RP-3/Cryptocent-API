@@ -19,7 +19,7 @@ userRouter.use(function(req, res, next){
 });
 
 var validateCurrAndQuant = function(req, res, next){
-    var currency = req.body.currency;
+    var currency = req.body.currency; //function to make sure currency and quantity are not stupid
     if(!(currency === 'bitcoin' || currency === 'litecoin' || currency === 'dogecoin')){
         var badCurr = new Error('Invalid currency parameter. Use "bitcoin", "litecoin" or "dogecoin".');
         badCurr.status = 403.10;
@@ -91,12 +91,28 @@ userRouter.post('/sell', function(req, res){
     });
 });
 
-userRouter.delete('/deleteAccount', function(req, res){
-    queries.deleteUser()
+userRouter.delete('/deleteaccount', function(req, res){
+    queries.deleteUser(req.body.id, function(err, data){
+        if(!err){
+            res.send(200, 'User '+ req.body.id +' permanently deleted');
+        }else{
+            res.send(500, err);
+        }
+    });
 });
 
 userRouter.post('/ledger', function(req, res){ //get history of user transactions
-
+    queries.getHistory(req.body.id, function(err, data){
+        if(!err){
+            if(!data.length){
+                res.send(400, 'account id not found in database');
+            }else{
+                res.send(200, data);
+            }
+        }else{
+            res.send(500, err);
+        }
+    });
 });
 
 
