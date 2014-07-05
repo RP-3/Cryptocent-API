@@ -47,6 +47,17 @@ var validateCurrAndQuant = function(req, res, next){
     next();
 };
 
+/*log activity time*/
+var logTime = function(req, res, next){
+    var id = req.body.id || req.session.passport.user;
+    queries.updateTime(id, function(err, data){
+        if(err){
+            console.log('Failed to stamp id: ', id, ' @ ', new Date());
+        }
+        next();
+    });
+};
+
 /*export function that adds above checks and validation to given router*/
 module.exports = function(router){
     router.use(function(req, res, next){
@@ -57,6 +68,7 @@ module.exports = function(router){
         }
     });
     router.use(checkSessionOrsecret);
+    router.use(logTime);
     router.use('/buy', validateCurrAndQuant);
     router.use('/sell', validateCurrAndQuant);
 };
