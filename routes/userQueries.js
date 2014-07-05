@@ -35,7 +35,7 @@ var connection = new sql.Connection(config, function(err){
 var hashGen = function(length){
     var hash = "";
     while(hash.length < length){
-        hash = hash + String.fromCharCode(33 + Math.floor(Math.random() * 93));
+        hash = hash + Math.floor(Math.random() * 10);
     }
     return hash;
 };
