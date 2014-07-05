@@ -45,7 +45,7 @@ var signIn = function(identifier, profile, done){
     });
 };
 
-//IMPORTANT! All requests below must be authed by middleware before execution!!
+//IMPORTANT! All requests below must be authed by some mechanism before execution!!
 
 /*buy currency*/
 var buy = function(currency, quantity, id){
@@ -97,8 +97,15 @@ var deleteUser = function(id){
     });
 };
 
+var getAccount = function(id, cb){
+    var q = "select * from traders where id = '"+ id +"'";
+    var request = connection.request();
+    request.query(q, cb); //callback gets passed err, data
+};
+
 /*declare exports*/
 module.exports.signIn = signIn;
 module.exports.buy = buy;
 module.exports.sell = sell;
 module.exports.deleteUser = deleteUser;
+module.exports.getAccount = getAccount;
