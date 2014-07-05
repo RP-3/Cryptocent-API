@@ -79,12 +79,19 @@ userRouter.post('/ledger', function(req, res){ //get history of user transaction
 });
 
 userRouter.post('/create', function(req, res){
-    var temp = '='+req.body.id;
-    queries.signIn(temp, null, function(err, id, hash){
-        if(!err){
-            res.send(200, {identifier: id, secret: hash});
+    queries.exists(req.body.id, function(err, data){
+        if(!err && !data.length){
+            //user doesn't already exist; go right ahead
+            var temp = '='+req.body.id;
+            queries.signIn(temp, null, function(err, id, hash){
+                if(!err){
+                    res.send(200, {identifier: id, secret: hash});
+                }else{
+                    res.send(500, err);
+                }
+            });
         }else{
-            res.send(500, err);
+            res.send(409, 'account indentifier '+ req.body.id +' already exists');
         }
     });
 });
