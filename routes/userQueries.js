@@ -98,7 +98,7 @@ var deleteUser = function(id){
 };
 
 var getAccount = function(id, cb){
-    var q = "select * from traders where id = '"+ id +"'";
+    var q = "select * from traders where identifier = '"+ id +"'";
     var request = connection.request();
     request.query(q, cb); //callback gets passed err, data
 };
