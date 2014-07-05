@@ -2,7 +2,7 @@ var express = require('express');
 var userRouter = express.Router();
 var queries = require('./userQueries.js');
 
-/*set up id authentication for router*/
+/*set up id check for router*/
 userRouter.use(function(req, res, next){
     console.log(req.body.id);
     if(!req.body.id){
@@ -10,6 +10,12 @@ userRouter.use(function(req, res, next){
     }else{
         next();
     }
+});
+
+/*if requiring sessions for security, implement them here*/
+userRouter.use(function(req, res, next){
+    //add check to see if session matches req.body.id to lock down this router
+    next();
 });
 
 var validateCurrAndQuant = function(req, res, next){
@@ -86,7 +92,7 @@ userRouter.post('/sell', function(req, res){
 });
 
 userRouter.delete('/deleteAccount', function(req, res){
-
+    queries.deleteUser()
 });
 
 userRouter.post('/ledger', function(req, res){ //get history of user transactions
