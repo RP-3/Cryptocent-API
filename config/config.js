@@ -1,5 +1,6 @@
 var apiRouter = require('../routes/apiRouter.js');
 var userRouter = require('../routes/userRouter.js');
+var accountRouter = require('../routes/accountRouter.js');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
 var session = require('express-session');
@@ -13,11 +14,14 @@ module.exports = function(app){
 
     /*non-passport-protected routes*/
 	app.use('/api', apiRouter);
-    app.use('/api/transact', userRouter);
 
     /*passport-specific middleware*/
     app.use(passport.initialize());
     app.use(passport.session());
+
+    /*protected routes*/
+    app.use('/api/transact', userRouter);
+    app.use('/account', accountRouter);
 
     /*Authenticated get requests load client-side app (passport-protected)*/
     app.get('/console', passport.authenticate('google', {
