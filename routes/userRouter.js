@@ -2,45 +2,8 @@ var express = require('express');
 var userRouter = express.Router();
 var queries = require('./userQueries.js');
 
-/*set up id check for router*/
-userRouter.use(function(req, res, next){
-    console.log(req.body.id);
-    if(!req.body.id){
-        res.send(403.10, 'Transactional requests must include an account id');
-    }else{
-        next();
-    }
-});
-
-/*if requiring sessions for security, implement them here*/
-userRouter.use(function(req, res, next){
-    //add check to see if session matches req.body.id to lock down this router
-    next();
-});
-
-var validateCurrAndQuant = function(req, res, next){
-    var currency = req.body.currency; //function to make sure currency and quantity are not stupid
-    if(!(currency === 'bitcoin' || currency === 'litecoin' || currency === 'dogecoin')){
-        var badCurr = new Error('Invalid currency parameter. Use "bitcoin", "litecoin" or "dogecoin".');
-        badCurr.status = 403.10;
-        return next(badCurr);
-    }
-
-    var quantity = req.body.quantity;
-    if(!isNaN(parseFloat(quantity)) && parseFloat(quantity) < 1000000000){
-        req.body.quantity = parseFloat(quantity);
-    }else{
-        var badQuant = new Error('quantity must be a valid float  and < a billion');
-        badQuant.status = 403.1;
-        return next(badQuant);
-    }
-
-    next();
-};
-
-/*validate currency and quantity params*/
-userRouter.use('/buy', validateCurrAndQuant);
-userRouter.use('/sell', validateCurrAndQuant);
+/*set up id and parameter check for router. Broken out to keep this file short-ish*/
+require('./transactionCheck.js')(userRouter);
 
 /*set up routes*/
 userRouter.post('/account', function(req, res){ //get user's account
@@ -117,9 +80,9 @@ userRouter.post('/ledger', function(req, res){ //get history of user transaction
 
 userRouter.post('/create', function(req, res){
     var temp = '='+req.body.id;
-    queries.signIn(temp, null, function(err, id){
+    queries.signIn(temp, null, function(err, id, hash){
         if(!err){
-            res.send(200, 'account created with identifier: ' + id);
+            res.send(200, {identifier: id, secret: hash});
         }else{
             res.send(500, err);
         }
