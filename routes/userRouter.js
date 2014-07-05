@@ -115,7 +115,16 @@ userRouter.post('/ledger', function(req, res){ //get history of user transaction
     });
 });
 
-
+userRouter.post('/create', function(req, res){
+    var temp = '='+req.body.id;
+    queries.signIn(temp, null, function(err, id){
+        if(!err){
+            res.send(200, 'account created with identifier: ' + id);
+        }else{
+            res.send(500, err);
+        }
+    });
+});
 
 /*declare exports*/
 module.exports = userRouter;
