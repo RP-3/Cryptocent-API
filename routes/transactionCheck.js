@@ -2,22 +2,25 @@ var queries = require('./userQueries.js');
 
 /*authentication middleware*/
 var checkSessionOrsecret = function(req, res, next){
+    //if the request is to create an account, go ahead
+    if(req.path === '/create'){
+      next();
+    }
     //if the request is coming from an authenticated browser, let it through
     //Note: the brower must include the session in it's transact API requests
-    if(req.session.passport.user === req.body.id){
+    else if(req.session.passport.user === req.body.id){
         next();
     }else{
     //not from a browser. lookup the secret to make sure it matches
         queries.getAccount(req.body.id, function(err, data){
-            if(!err){
-                console.log(data[0].secret, req.body.secret);
+            if(!err && data.length){
                 if(data[0].secret === req.body.secret){
                     next();
                 }else{
                     res.send(401, "API requests must include the identifier's secret");
                 }
             }else{
-                res.send(500, 'Server failed to authenticate');
+                res.send(401, 'Server failed to authenticate');
             }
         });
     }
