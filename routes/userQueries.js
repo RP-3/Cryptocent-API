@@ -33,9 +33,10 @@ var connection = new sql.Connection(config, function(err){
 
 /*sign in*/
 var signIn = function(identifier, profile, done){
-    var id = identifier.slice(identifier.indexOf('=')+1),
-    name = profile.name.givenName,
-    email = profile.emails[0].value,
+    var id = identifier.slice(identifier.indexOf('=')+1);
+    var profile = profile || {name: 'Lazarus', emails: [{value: 'tyrion@short.io'}]}; //create a profile object if one is not supplied (i.e., manually created profile)
+    var name = profile.name.givenName;
+    var email = profile.emails[0].value;
     //check if user exists and create if not
     q = "if not exists (select * from traders where identifier = '"+ id +"') begin insert into traders (identifier, name, bitcoin, dogecoin, litecoin, usd, email) values ('"+ id +"', '"+ name +"', 1.0, 1.0, 1.0, 1000.0, '"+ email +"') end";
 
