@@ -61,17 +61,7 @@ var sell = function(currency, quantity, id){
     var price = rates[currency].bid * quantity;
     var q = "declare @var int select @var = id from traders where identifier = '"+ id +"' if (select "+ currency +" from traders where identifier = '"+ id +"') > "+ quantity +" begin update traders set usd = usd + "+ price +", "+ currency +" = "+ currency +" - "+ quantity +" where identifier = '"+ id +"' insert into transactions (currency, quantity, cost, transactor) values ('"+ currency +"', '"+ quantity +"', '"+ -price +"', @var) return end select "+ currency +" from traders where identifier = '"+ id +"'";
     var request = connection.request();
-    request.query(q, function(err, data){
-        if(!err){
-            if(!data){
-                console.log('Transaction complete.'); //req/response should go here or in else statement following
-            }else{
-                console.log('Insufficient currency: $', data[0][currency]);
-            }
-        }else{
-            console.log('err: ', err);
-        }
-    });
+    request.query(q, cb);
 };
 
 /*delete user permanently*/
