@@ -48,22 +48,12 @@ var signIn = function(identifier, profile, done){
 //IMPORTANT! All requests below must be authed by some mechanism before execution!!
 
 /*buy currency*/
-var buy = function(currency, quantity, id){
+var buy = function(currency, quantity, id, cb){
     //check sufficient account balance
     var cost = rates[currency].ask * quantity;
     var q = "declare @var int select @var = id from traders where identifier = '"+ id +"' if (select usd from traders where identifier = '"+ id +"') > "+ cost +" begin update traders set usd = usd - "+ cost +", "+ currency +" = "+ currency +" + "+ quantity +" where identifier = '"+ id +"' insert into transactions (currency, quantity, cost, transactor) values ('"+ currency +"', '"+ quantity +"', '"+ cost +"', @var) return end select usd from traders where identifier = '"+ id +"'";
     var request = connection.request();
-    request.query(q, function(err, data){
-        if(!err){
-            if(!data){
-                console.log('Transaction complete.'); //req/response should go here or in else statement following
-            }else{
-                console.log('Insufficient funds: $', data[0].usd);
-            }
-        }else{
-            console.log('err: ', err);
-        }
-    });
+    request.query(q, cb);
 };
 
 /*sell currency*/
