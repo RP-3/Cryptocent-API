@@ -31,7 +31,7 @@ var connection = new sql.Connection(config, function(err){
     }
 });
 
-/*generates a random string of given length*/
+/*generates a random number of given length*/
 var hashGen = function(length){
     var hash = "";
     while(hash.length < length){
@@ -40,7 +40,6 @@ var hashGen = function(length){
     return hash;
 };
 
-/*sign in*/
 var signIn = function(identifier, profile, done){
     var id = identifier.slice(identifier.indexOf('=')+1);
     var profile = profile || {name: {givenName: 'Lazarus'}, emails: [{value: 'cybertrader@skynet.io'}]}; //create a profile object if one is not supplied (i.e., manually created profile)
@@ -48,7 +47,7 @@ var signIn = function(identifier, profile, done){
     var email = profile.emails[0].value;
     var hash = hashGen(10);
     //check if user exists and create if not
-    q = "if not exists (select * from traders where identifier = '"+ id +"') begin insert into traders (identifier, name, bitcoin, dogecoin, litecoin, usd, email, secret) values ('"+ id +"', '"+ name +"', 1.0, 1.0, 1.0, 1000.0, '"+ email +"', '"+ hash +"') end";
+    q = "if not exists (select * from traders where identifier = '"+ id +"') begin insert into traders (identifier, name, bitcoin, dogecoin, litecoin, usd, email, secret, timestamp) values ('"+ id +"', '"+ name +"', 1.0, 1.0, 1.0, 1000.0, '"+ email +"', '"+ hash +"', GETDATE()) end";
 
     var request = connection.request();
     request.query(q, function(err){
@@ -56,9 +55,6 @@ var signIn = function(identifier, profile, done){
     });
 };
 
-//IMPORTANT! All requests below must be authed by some mechanism before execution!!
-
-/*buy currency*/
 var buy = function(currency, quantity, id, cb){
     //check sufficient account balance
     var cost = rates[currency].ask * quantity;
@@ -67,7 +63,6 @@ var buy = function(currency, quantity, id, cb){
     request.query(q, cb); //callback gets passed err, data
 };
 
-/*sell currency*/
 var sell = function(currency, quantity, id, cb){
     var price = rates[currency].bid * quantity;
     var q = "declare @var int select @var = id from traders where identifier = '"+ id +"' if (select "+ currency +" from traders where identifier = '"+ id +"') > "+ quantity +" begin update traders set usd = usd + "+ price +", "+ currency +" = "+ currency +" - "+ quantity +" where identifier = '"+ id +"' insert into transactions (currency, quantity, cost, transactor) values ('"+ currency +"', '"+ quantity +"', '"+ -price +"', @var) return end select "+ currency +" from traders where identifier = '"+ id +"'";
@@ -75,7 +70,6 @@ var sell = function(currency, quantity, id, cb){
     request.query(q, cb); //callback gets passed err, data
 };
 
-/*delete user permanently*/
 var deleteUser = function(id, cb){
     var q = "declare @var int select @var = id from traders where identifier = '"+ id +"'  delete from traders where identifier = '"+ id +"' delete from transactions where transactor = @var";
     var request = connection.request();
@@ -100,6 +94,12 @@ var exists = function(id, cb){
     request.query(q, cb); //takes err, data
 };
 
+var updateTime = function(id, cb){
+    var q = "update traders set timestamp = GETDATE() where identifier = '"+ id +"'";
+    var request = connection.request();
+    request.query(q, cb);
+};
+
 /*declare exports*/
 module.exports.signIn = signIn;
 module.exports.buy = buy;
@@ -108,3 +108,4 @@ module.exports.deleteUser = deleteUser;
 module.exports.getAccount = getAccount;
 module.exports.getHistory = getHistory;
 module.exports.exists = exists;
+module.exports.updateTime = updateTime;
