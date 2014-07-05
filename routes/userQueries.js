@@ -53,33 +53,33 @@ var buy = function(currency, quantity, id, cb){
     var cost = rates[currency].ask * quantity;
     var q = "declare @var int select @var = id from traders where identifier = '"+ id +"' if (select usd from traders where identifier = '"+ id +"') > "+ cost +" begin update traders set usd = usd - "+ cost +", "+ currency +" = "+ currency +" + "+ quantity +" where identifier = '"+ id +"' insert into transactions (currency, quantity, cost, transactor) values ('"+ currency +"', '"+ quantity +"', '"+ cost +"', @var) return end select usd from traders where identifier = '"+ id +"'";
     var request = connection.request();
-    request.query(q, cb);
+    request.query(q, cb); //callback gets passed err, data
 };
 
 /*sell currency*/
-var sell = function(currency, quantity, id){
+var sell = function(currency, quantity, id, cb){
     var price = rates[currency].bid * quantity;
     var q = "declare @var int select @var = id from traders where identifier = '"+ id +"' if (select "+ currency +" from traders where identifier = '"+ id +"') > "+ quantity +" begin update traders set usd = usd + "+ price +", "+ currency +" = "+ currency +" - "+ quantity +" where identifier = '"+ id +"' insert into transactions (currency, quantity, cost, transactor) values ('"+ currency +"', '"+ quantity +"', '"+ -price +"', @var) return end select "+ currency +" from traders where identifier = '"+ id +"'";
     var request = connection.request();
-    request.query(q, cb);
+    request.query(q, cb); //callback gets passed err, data
 };
 
 /*delete user permanently*/
-var deleteUser = function(id){
-    var q = "declare @var int select @var = id from traders where identifier = '"+ id +"'  delete from traders where identifier = '"+ id +"' delete from transactions where id = @var";
+var deleteUser = function(id, cb){
+    var q = "declare @var int select @var = id from traders where identifier = '"+ id +"'  delete from traders where identifier = '"+ id +"' delete from transactions where transactor = @var";
     var request = connection.request();
-    request.query(q, function(err, data){
-        if(!err){
-            console.log('User '+ id +' deleted');
-        }else{
-            console.log('err: ', err);
-        }
-    });
+    request.query(q, cb);
 };
 
 var getAccount = function(id, cb){
     var q = "select * from traders where identifier = '"+ id +"'";
     var request = connection.request();
+    request.query(q, cb); //callback gets passed err, data
+};
+
+var getHistory = function(id, cb){
+    var q = "declare @var int select @var = id from traders where identifier = '"+ id +"' select * from transactions where transactor = @var order by timestamp asc";
+    request = connection.request();
     request.query(q, cb); //callback gets passed err, data
 };
 
@@ -89,3 +89,4 @@ module.exports.buy = buy;
 module.exports.sell = sell;
 module.exports.deleteUser = deleteUser;
 module.exports.getAccount = getAccount;
+module.exports.getHistory = getHistory;
