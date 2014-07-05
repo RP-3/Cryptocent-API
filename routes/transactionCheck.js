@@ -36,10 +36,10 @@ var validateCurrAndQuant = function(req, res, next){
     }
 
     var quantity = req.body.quantity;
-    if(!isNaN(parseFloat(quantity)) && parseFloat(quantity) < 1000000000){
+    if(!isNaN(parseFloat(quantity)) && parseFloat(quantity) < 1000000000 && parseFloat(quantity) > 0){
         req.body.quantity = parseFloat(quantity);
     }else{
-        var badQuant = new Error('quantity must be a valid float  and < a billion');
+        var badQuant = new Error('quantity must be a valid float && 0 < float < a billion');
         badQuant.status = 403.1;
         return next(badQuant);
     }
