@@ -7,20 +7,24 @@
     <!-- twitter bootstrap -->
     <script src='./app/bower_components/jquery/dist/jquery.min.js'></script>
     <script src='./app/bower_components/bootstrap/dist/js/bootstrap.min.js'></script>
-    <link rel='stylesheet' type='text/css' href='./app/bower_components/bootstrap/dist/css/bootstrap-theme.css'>
+    <link rel='stylesheet' type='text/css' href='./app/bower_components/bootstrap/dist/css/bootstrap.css'>
 
     <!-- angular, ui-router, ui bootstrap -->
     <script src='./app/bower_components/angular/angular.js'></script>
     <script src='./app/bower_components/angular-bootstrap/ui-bootstrap-tpls.js'></script>
     <script src='./app/bower_components/angular-ui-router/release/angular-ui-router.min.js'></script>
 
+    <!-- actual app scripts -->
+    <script src='./app/app/app.js'></script>
+
   </head>
 
   <!-- inject ng app here -->
   <body>
 
-    <div class='containter'>
-      fooBot funkyTown
+    <div class='containter' ng-app='app'>
+      <header ng-include="'app/navbar/nav.html'"></header>
+      <div ui-view></div>
     </div>
 
 
