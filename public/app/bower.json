@@ -1,0 +1,23 @@
+{
+  "name": "Cryptocent",
+  "version": "0.0.0",
+  "homepage": "https://github.com/RP-3/Cryptocent-API",
+  "authors": [
+    "Rohan <sarith21@gmail.com>"
+  ],
+  "main": "index.html",
+  "license": "MIT",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "angular": "~1.2.19",
+    "angular-bootstrap": "~0.11.0",
+    "angular-ui-router": "~0.2.10",
+    "bootstrap": "~3.2.0"
+  }
+}
