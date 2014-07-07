@@ -1,11 +1,11 @@
-about.html
 
-<ul>
-    <li ng-repeat="fumble in stuff">{{fumble}}</li>
-</ul>
+<div class='container'>
 
 <!-- date/time picker 1 -->
 <div class="row">
+    <div class='col-sm-6'>
+        Start date:
+    </div>
     <div class='col-sm-6'>
         <div class="form-group">
             <div class='input-group date' id='datetimepicker1'>
@@ -19,5 +19,8 @@ about.html
         $(function () {
             $('#datetimepicker1').datetimepicker();
         });
+        $('#datetimepicker1').data("DateTimePicker").setMinDate(new Date("june 25, 2014"));
+        $('#datetimepicker1').data("DateTimePicker").setMaxDate(new Date());
     </script>
+</div>
 </div>

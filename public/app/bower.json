@@ -19,6 +19,8 @@
     "angular-bootstrap": "~0.11.0",
     "angular-ui-router": "~0.2.10",
     "bootstrap": "~3.2.0",
-    "eonasdan-bootstrap-datetimepicker": "~3.0.0"
+    "eonasdan-bootstrap-datetimepicker": "~3.0.0",
+    "rickshaw": "~1.5.0",
+    "underscore": "~1.6.0"
   }
 }
