@@ -27,6 +27,12 @@ angular
 
                     graph.render();
 
+                    var xAxis = new Rickshaw.Graph.Axis.Time({graph:graph});
+                    xAxis.render();
+
+                    var yAxis = new Rickshaw.Graph.Axis.Y({graph:graph});
+                    yAxis.render();
+
                 });
             }
         };
