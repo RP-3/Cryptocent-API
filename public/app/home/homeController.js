@@ -1,20 +1,35 @@
 angular
     .module('app')
-    .controller('homeController', ['$scope', 'MinlyData', function($scope, MinlyData){
-        $scope.title = 'Home';
+    .controller('homeController', ['$scope', 'MinlyData', '$http', function($scope, MinlyData, $http){
+        $scope.title = 'Cryptocent';
 
-        $scope.tinyStuff = [
-            {ID: 2}
-        ];
+        $http.get('app/data/sightings.json').success(function(result){
+            $scope.sightings = result;
 
-        $scope.foo = function(){
-            MinlyData.get('bitcoin', $scope.tinyStuff);
-        };
+            $scope.renderer = 'line';
 
-        $scope.log = function(){
-            console.log($scope.thing);
-        }
+            $scope.sightingsByDate = _(result)
+                .chain()
+                .countBy(function(sighting){return sighting.sightedAt.$date;})
+                .pairs()
+                .map(function(pair){
+                    return {
+                        x: new Date(parseInt(pair[0])).getTime()/1000,
+                        y: pair[1]
+                    };
+                })
+                .sortBy(function(dateCount){return dateCount.x;})
+                .value();
+        });
 
-        $scope.items = [1, 3, 5, 2, 7];
-        $scope.selectedValue = 5;
+
+
+
+        // $scope.tinyStuff = [
+        //     {ID: 2}
+        // ];
+
+        // $scope.foo = function(){
+        //     MinlyData.get('bitcoin', $scope.tinyStuff);
+        // };
     }]);
