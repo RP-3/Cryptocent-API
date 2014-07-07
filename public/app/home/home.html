@@ -1,2 +1,18 @@
+<div class='container'>
 <h1>{{title}}</h1>
+
+<!-- <div ng-repeat='sighting in sightings'>
+    {{sighting.reportedAt.$date}}
+</div> -->
+
+<rickshaw-chart
+    data="sightingsByDate"
+    color="blue"
+    renderer="renderer"
+    width="750"
+    height="450"
+></rickshaw-chart>
+
+
+</div>
 
