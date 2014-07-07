@@ -1,0 +1,8 @@
+/*Styling to go alongside rickshaw-rendered charts*/
+
+.rickshaw_graph .x_tick .title{
+    opacity: 1 !important;
+    position: relative;
+    top: 460px; /*find out how to not hardcode this!*/
+    color: #646464;
+}
