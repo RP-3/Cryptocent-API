@@ -6,3 +6,8 @@
     top: 460px; /*find out how to not hardcode this!*/
     color: #646464;
 }
+
+.rickshaw_graph .y_ticks text {
+    opacity: 1 !important;
+    color: #646464;
+}

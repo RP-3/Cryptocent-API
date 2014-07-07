@@ -33,6 +33,12 @@ angular
                     var yAxis = new Rickshaw.Graph.Axis.Y({graph:graph});
                     yAxis.render();
 
+                    var hoverDetail = new Rickshaw.Graph.HoverDetail({
+                        graph: graph,
+                        formatter: function(series, x, y, formattedX, formattedY){
+                            return y + "sightings on" + formattedX;
+                        }
+                    });
                 });
             }
         };
