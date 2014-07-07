@@ -11,4 +11,8 @@ angular
                 url: '/',
                 templateUrl: 'app/home/home.html'
             })
+            .state('about', {
+                url: '/about',
+                templateUrl: 'app/about/about.html'
+            })
     }])
